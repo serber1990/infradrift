@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infradrift"
+version = "1.0.0"
+description = "Detect drift between declared and actual server state — packages, ports, users, crons, and services."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Serber1990", email = "sergiox.gd@gmail.com" }]
+requires-python = ">=3.9"
+dependencies = ["shellcolorize"]
+keywords = ["infrastructure", "drift", "sysadmin", "devops", "server", "audit", "snapshot"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: Console",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/serber1990/infradrift"
+Repository = "https://github.com/serber1990/infradrift"
+
+[project.scripts]
+infradrift = "infradrift.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["infradrift*"]
