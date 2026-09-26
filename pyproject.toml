@@ -1,33 +1,51 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "infradrift"
-version = "1.0.0"
-description = "Detect drift between declared and actual server state — packages, ports, users, crons, and services."
+dynamic = ["version"]
+description = "Detect drift between a known-good baseline and the current state of a Linux server — packages, ports, users, groups, crons and services."
 readme = "README.md"
-license = { text = "MIT" }
-authors = [{ name = "Serber1990", email = "sergiox.gd@gmail.com" }]
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Serber1990", email = "serber1990@pm.me" }]
 requires-python = ">=3.9"
-dependencies = ["shellcolorize"]
-keywords = ["infrastructure", "drift", "sysadmin", "devops", "server", "audit", "snapshot"]
+dependencies = ["shellcolorize>=1.1.0"]
+keywords = ["infrastructure", "drift", "sysadmin", "devops", "security", "audit", "snapshot", "linux"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Environment :: Console",
+    "Intended Audience :: System Administrators",
     "Topic :: System :: Systems Administration",
+    "Topic :: Security",
     "Topic :: Utilities",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4"]
+
 [project.urls]
-Homepage = "https://github.com/serber1990/infradrift"
+Homepage   = "https://github.com/serber1990/infradrift"
 Repository = "https://github.com/serber1990/infradrift"
+Issues     = "https://github.com/serber1990/infradrift/issues"
+Changelog  = "https://github.com/serber1990/infradrift/blob/main/CHANGELOG.md"
 
 [project.scripts]
 infradrift = "infradrift.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
 include = ["infradrift*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "infradrift.__version__" }
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E9", "F", "B"]

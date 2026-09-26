@@ -4,4 +4,6 @@ __pycache__/
 dist/
 build/
 .venv/
-*.snap.json
+.pytest_cache/
+.ruff_cache/
+baseline.json

@@ -3,15 +3,14 @@ Render a DriftReport to the terminal, Markdown, or JSON.
 """
 import json
 from datetime import datetime
-from typing import Optional
-
 from shellcolorize import Color
 from .diff import DriftReport, Change
 
+# Attribute names, resolved at render time so Color.auto()/disable() are respected.
 _SEV_COLOR = {
-    'CRITICAL': Color.RED,
-    'WARNING':  Color.YELLOW,
-    'INFO':     Color.CYAN,
+    'CRITICAL': 'RED',
+    'WARNING':  'YELLOW',
+    'INFO':     'CYAN',
 }
 
 _SEV_ICON = {
@@ -26,11 +25,12 @@ _KIND_SYMBOL = {
     'changed': '~',
 }
 
-_CATEGORIES = ['ports', 'users', 'crons', 'services', 'packages']
+_CATEGORIES = ['ports', 'users', 'groups', 'crons', 'services', 'packages']
 _CAT_LABELS = {
     'packages': 'Packages',
     'ports':    'Ports',
     'users':    'Users',
+    'groups':   'Privileged Groups',
     'crons':    'Cron Jobs',
     'services': 'Services',
 }
@@ -38,7 +38,7 @@ _CAT_LABELS = {
 
 def _header() -> None:
     title = 'infradrift  ·  drift report'
-    w = len(title) + 6
+    w = len(title) + 4
     print()
     print(f"  {Color.CYAN}╔{'═' * w}╗{Color.RESET}")
     print(f"  {Color.CYAN}║{Color.RESET}  {Color.BOLD}{Color.CYAN}{title}{Color.RESET}  {Color.CYAN}║{Color.RESET}")
@@ -49,7 +49,8 @@ def _header() -> None:
 def _meta_line(label: str, meta: dict) -> None:
     ts = meta.get('captured_at', '?')
     host = meta.get('hostname', '?')
-    print(f"  {Color.DIM}{label:<10}{Color.RESET} {ts}  ({host})")
+    user = f"  as {meta['user']}" if meta.get('user') else ''
+    print(f"  {Color.DIM}{label:<10}{Color.RESET} {ts}  ({host}){Color.DIM}{user}{Color.RESET}")
 
 
 def _section(label: str) -> None:
@@ -58,7 +59,7 @@ def _section(label: str) -> None:
 
 
 def _change_line(c: Change) -> None:
-    color  = _SEV_COLOR.get(c.severity, '')
+    color  = getattr(Color, _SEV_COLOR.get(c.severity, ''), '')
     icon   = _SEV_ICON.get(c.severity, ' ')
     sym    = _KIND_SYMBOL.get(c.kind, ' ')
     detail = f"  {Color.DIM}{c.detail}{Color.RESET}" if c.detail else ''
@@ -112,8 +113,8 @@ def render_markdown(report: DriftReport) -> str:
     lines += [
         "# infradrift — Drift Report",
         "",
-        f"| | |",
-        f"|---|---|",
+        "| | |",
+        "|---|---|",
         f"| **Baseline** | {report.baseline_meta.get('captured_at','?')}  ({report.baseline_meta.get('hostname','?')}) |",
         f"| **Current**  | {report.current_meta.get('captured_at','?')}  ({report.current_meta.get('hostname','?')}) |",
         f"| **Generated** | {ts_now} |",
