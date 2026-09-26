@@ -11,6 +11,10 @@ Take a snapshot when the server is in a good state. Run `check` any time — aft
 or during an incident — to see exactly what changed. No agent, no daemon, no dependencies on the server
 beyond Python.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/serber1990/infradrift/main/docs/demo.gif" alt="infradrift demo: drift report with new port, new user and suspicious cron job" width="820">
+</p>
+
 ---
 
 ## 📄 Example
